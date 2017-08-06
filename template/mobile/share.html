@@ -1,0 +1,275 @@
+<!doctype html>
+<html>
+<head lang="en">
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="address=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title>{$reply['title']}</title>
+{php echo register_jssdk(false);}
+<style>
+html{height:100%;}
+body{ height:100%; overflow:hidden; background:#FFF;}
+#loading{ width:66px; height:120px; overflow:hidden; position:absolute; z-index:2; background:url({MODULE_URL}template/mobile/img/loading.png) 0 0 no-repeat;}
+</style>
+<script>
+var imgPath = "{MODULE_URL}template/mobile/img";
+var path = "";
+</script>
+<script type="text/javascript" src="{MODULE_URL}template/mobile/js/jquery-2.1.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{MODULE_URL}template/mobile/js/style.css?v={time()}">
+<script type="text/javascript">
+	mc = window.mc = {
+	"conf": {
+		"a_info": "", 
+		"autoDownFP": "Y", 
+		"checkedNum": "8",
+		"m_link": "",
+		"playTime": "{$reply['gametime']}", 
+	},
+	"refUrl": {
+		"api": "{php echo $this->createMobileUrl('ajax',array('op'=>'submitmark'))}",
+		"award": "", 
+		"more": "{php echo $id}", 
+		"rank": "{php echo $this->createMobileUrl('rank',array('id'=>$id))}", 
+		"groupid": "{php echo $isgroup}", 
+		"fellow": "{php echo $status}",
+		"uid": "{php echo $fans['id']}",
+		"openid": "{php echo $openid}",
+		"from_user": "{php echo $from_user}",
+		"bestmark": "{$fans['mark']}",
+		"endword": "{$reply['gameend2_title']}",
+		"ucenter": ""
+	},
+	"resource": {
+		"baseUrl": "", 
+		"screenWidth": [640,860,1080,1300],
+		"imgAudio": [
+			"{$reply['game_role1_n']}", 
+			"{$reply['game_role2_n']}", 
+			"{$reply['game_role3_n']}", 
+			"{$reply['game_role4_n']}", 
+			"", 
+			"start.png"
+		],
+		"imgHitAudio": [
+			"{$reply['game_role1_h']}", 
+			"{$reply['game_role2_h']}", 
+			"{$reply['game_role3_h']}",
+			"{$reply['game_role4_h']}",
+		],
+		"imgMark": [
+			"{$reply['game_role1_m']}", 
+			"{$reply['game_role2_m']}", 
+			"{$reply['game_role3_m']}",
+			"{$reply['game_role4_m']}",
+		],
+		"imgMarkd": [
+			"0", 
+			"0", 
+			"0",
+			"{$reply['game_role4_md']}",
+		],
+		"imgInfo": [
+			"{$reply['info_1']}", 
+			"{$reply['info_2']}", 
+			"{$reply['info_3']}",
+			"{$reply['info_4']}",
+		],
+		"version":"",
+		"difficulty":"{$reply['difficulty']}",
+		"difficult":"{if $reply['difficulty']==0}30{elseif $reply['difficulty']==1}20{else}10{/if}",
+	},
+};
+</script>
+</head><body>
+<div id="game_" style="position:relative;width:100%; height:100%;overflow:hidden;display:none;">
+  <canvas id="canvas"></canvas>
+  <span id="timeLefted">0</span> <span id="score">0</span> <span id="markbox"></span> </div>
+<div class="zwwI_container" style="display:none; background:#993"> 
+  <!--第一个页面--> 
+  <img id="coverImg" class="bg" src="{MODULE_URL}template/mobile/img/infoBG.png">
+  <div class="game_btn_group">
+    <div><a class="i-btn" onclick="gameStart(event);">开始游戏</a> <a class="i-btn" onclick="$('#giftbox').show();">奖品清单</a></div> 
+    <div><a class="i-btn" onclick="$('#rule').show();">游戏规则</a> <a class="i-btn" onclick="goRank();">积分排行</a></div> 
+  </div>
+</div>
+
+<!-- 活动规则 -->
+<div class="prompt" id="rule" style="display:none;">
+  <div class="cont tl"> <a class="close" onclick="hidePrompt(1,this);">╳</a>
+    <div class="space_15"></div>
+    <h3 class="f20 tc">活动规则</h3>
+    <div class="space_10"></div>
+    <article class="msg" style="text-align:left;">
+      <pre style="text-align:left;">{$reply['rule']}</pre>
+      <div class="space_30"></div>
+    </article>
+    <div class="btns"> <a onclick="hidePrompt(1,this);">返回</a> </div>
+    <div class="space_20"></div>
+  </div>
+</div>
+<!-- 奖品清单 -->
+<div class="prompt" id="giftbox" style="display:none;">
+  <div class="cont tl"> <a class="close" onclick="hidePrompt(1,this);">╳</a>
+    <div class="space_15"></div>
+    <h3 class="f20 tc">奖品清单</h3>
+    <div class="space_10"></div>
+    <article class="msg" style="text-align:left;">
+      <pre style="text-align:left;">{$reply['info']}</pre>
+      <div class="space_30"></div>
+    </article>
+    <div class="btns"> <a onclick="hidePrompt(1,this);">返回</a> </div>
+    <div class="space_20"></div>
+  </div>
+</div>
+{if $reply['info_1']}<div class="infobox" id="info_1" style="display:none; z-index:100;background:url({$_W['attachurl']}{$reply['info_1']}) no-repeat; background-size:100% 100%;"><img src="{$_W['attachurl']}{$reply['info_1']}" style=" width:1px; height:1px;"/></div>{/if}
+{if $reply['info_2']}<div class="infobox" id="info_2" style="display:none;z-index:99;background:url({$_W['attachurl']}{$reply['info_2']}) no-repeat; background-size:100% 100%;"><img src="{$_W['attachurl']}{$reply['info_2']}" style=" width:1px; height:1px;"/></div>{/if}
+{if $reply['info_3']}<div class="infobox" id="info_3" style="display:none;z-index:98;background:url({$_W['attachurl']}{$reply['info_3']}) no-repeat; background-size:100% 100%;"><img src="{$_W['attachurl']}{$reply['info_3']}" style=" width:1px; height:1px;"/></div>{/if}
+{if $reply['info_4']}<div class="infobox" id="info_4" style="display:none;z-index:97;background:url({$_W['attachurl']}{$reply['info_4']}) no-repeat; background-size:100% 100%;"><img src="{$_W['attachurl']}{$reply['info_4']}" style=" width:1px; height:1px;"/></div>{/if}
+
+<audio id="muisc_good" src="{MODULE_URL}template/mobile/img/good.mp3"></audio>
+<audio id="muisc_bad" src="{MODULE_URL}template/mobile/img/bad.mp3"></audio>
+<audio id="muisc_move" src="{MODULE_URL}template/mobile/img/move.mp3"></audio>
+<audio id="muisc_over" src="{MODULE_URL}template/mobile/img/gameover.mp3"></audio>
+
+<script type="text/javascript" src="{MODULE_URL}template/mobile/js/sweetalert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{MODULE_URL}template/mobile/js/sweetalert.css">
+<script type="text/javascript" src="{MODULE_URL}template/mobile/js/loader.js"></script>
+<link rel="stylesheet" type="text/css" href="{MODULE_URL}template/mobile/js/mc_game_merge.css">
+<script type="text/javascript" src="{MODULE_URL}template/mobile/js/mc_game_merge_v4.js"></script> 
+<script type="text/javascript" src="{MODULE_URL}template/mobile/js/game.js?vs={TIMESTAMP}"></script> 
+<script>
+function hidePrompt(state,obj){
+	switch(state){
+		case 1://隐藏普通提示
+			$(obj).parents('.prompt').hide();
+			break;
+		case 2://隐藏分享提示
+			$('#sharebox').hide();
+			break;
+		default:
+			break;
+	}
+}
+var bgPath = "{$reply['game_bg']}";//大背景
+var playPath = "{$reply['game_playbg']}";//游戏背景
+var role1Path = '{MODULE_URL}template/mobile/img/monkey.png';
+var role2Path = '{MODULE_URL}template/mobile/img/rat.png';
+var role3Path = '{MODULE_URL}template/mobile/img/tiger.png';
+var resUrl = "{$_W['attachurl']}";
+var countMonkey = 0;
+var infoCount=0;
+var infoCountN=0;
+var isPlayed=parseInt(mc.refUrl.bestmark);
+function readInfo(){
+	isPlayed=1;
+	gameStart(event);
+}
+function showInfo(){
+	if(isPlayed){
+		return 1;
+	}else{
+		var _ww=$(window).width();
+		var _wh=$(window).height();
+		for(i=0;i<mc.resource.imgInfo.length;i++){
+			if(mc.resource.imgInfo[i])infoCount++;
+		}
+		if(!infoCount)return 1;
+		$(".infobox").css({'width':_ww,"height":_wh,"top":0,"left":0}).show();
+		$(".infobox").on("click",function(){
+			$(this).hide();
+			infoCountN++;
+			if(infoCountN>=infoCount)readInfo();
+		})
+		return 0;
+	}
+}
+window.isSubmit=true;
+function startGame(){
+	if(!window.isSubmit)return;
+	window.isSubmit = false;
+	window.isSubmit = true;
+	wawaconf.left_times--;
+}
+function showACTTime(){
+	return 1;
+}
+function goRank(){
+	location.href="{php echo $this->createMobileUrl('rank',array('id'=>$id))}";
+}
+function follow(){
+	return 1;
+}
+function showGroup(){
+	
+	return 1;
+}
+function showEnd(word){
+	swal({
+		title:"恭喜您",
+		text:word+"您也可以点击【我也要拿奖】发起您自己的团队赢取大奖",
+		showCancelButton:true,
+		confirmButtonColor:"#DD6B55",
+		confirmButtonText:"我也要拿奖",
+		cancelButtonText:"再次挑战",
+		closeOnConfirm:false,
+		animation:false,
+		closeOnCancel:false},
+		function(isConfirm){
+		if(isConfirm){
+			window.location.href="{php echo $this->createMobileUrl('index',array('id'=>$id))}"; 
+		} else {
+			location.reload();
+		}
+	});
+}
+window.curscore=0;
+var shareData;
+var num = 0;
+var shareDefault="{php echo $reply['share_title'] ? $reply['share_title'] :'我拿到了|#成绩#|分！不服来战吧！'}";
+window.shareData = {
+	temptitle:"{php echo $share_des}",
+	title: "{$reply['title']}",
+	desc: "{php echo $share_des}",
+	link: '{if $reply["share_link"]}{reply["share_link"]}{else}{$_W["siteroot"]}app/index.php?i={$_W["uniacid"]}&c=entry&do=index&m=fendou_jjle&id={php echo $id}&fid={php echo $fid}{/if}',
+	imgUrl: "{if $reply['thumb_share']}{$_W['attachurl']}{$reply['thumb_share']}{else}{MODULE_URL}template/mobile/img/ico.jpg{/if}",
+	success: function () {}
+};
+wx.ready(function () {
+	wx.onMenuShareTimeline({
+	  title:shareData.desc,
+	  desc: shareData.desc,
+	  link:shareData.link,
+	  imgUrl: shareData.imgUrl,
+	  trigger: function (res) {},
+	  success: function (res) {},
+	  cancel: function (res) {},
+	  fail: function (res) {}
+	});
+	wx.onMenuShareAppMessage(window.shareData);
+	wx.hideMenuItems({
+		menuList: ['menuItem:copyUrl']
+	});
+});
+wx.error(function (res) {
+  alert(res.errMsg);
+});
+function dp_submitScore(ss){
+	document.title = window.shareData.temptitle = shareDefault.replace("|#成绩#|", ss);
+	window.shareData.title = document.title;
+	wx.onMenuShareTimeline({
+	  title:shareData.desc,
+	  desc: shareData.desc,
+	  link:shareData.link,
+	  imgUrl: shareData.imgUrl,
+	  trigger: function (res) {},
+	  success: function (res) {},
+	  cancel: function (res) {},
+	  fail: function (res) {}
+	});
+	wx.onMenuShareAppMessage(window.shareData);
+}
+</script>
+</body>
+</html>

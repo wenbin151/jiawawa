@@ -1,0 +1,204 @@
+{template 'common/header'}
+<ul class="nav nav-tabs">
+  <li {if $op=='display'}class="active"{/if}><a href="{php echo $this->createWebUrl('user',array('gid'=>$gid));}">会员管理</a></li>
+  {if $op=='post'}<li class="active"><a href="#">{$owner['nickname']}的团队</a></li>{/if}
+</ul>
+<script>
+require(['bootstrap'],function($){
+	$('.btn').hover(function(){
+		$(this).tooltip('show');
+	},function(){
+		$(this).tooltip('hide');
+	});
+});
+</script>
+{if $op == 'post'}
+<div class="main">
+  <div class="category">
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data"  onsubmit="return formcheck(this)">
+      <div class="panel panel-info">
+      <div class="panel-heading"> <a href="#" class="btn btn-danger">当前排名：<strong>{php echo $ranking}</strong></a></div>
+      <div class="panel-body table-responsive">
+      {if $item['jointype']==0}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width:50px;">排序</th>
+            <th style="width:90px;">头像</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>个人成绩</th>
+            <th>贡献度</th>
+            <th>状态</th>
+            <th style="text-align:right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {php $marks=0;}
+        {php $i=0;}
+        {loop $list $row}
+        {php $marks=$marks+$row['mark']}
+        <tr>
+          <td>{if $i==0}<img src="{MODULE_URL}template/mobile/img/medal.png" width="30" />{else}{php echo $i+($pindex-1)*$psize}{/if}</td>
+          <td><img src="{$row['headimgurl']}" width="64" height="64" class="img-rounded" /></td>
+          <td>{$row['nickname']}</td>
+          <td>{if $row['sex'] == 1} <span class="label label-danger">男</span> {else if $row['sex'] == 2} <span class="label label-success">女</span>{else} {/if}</td>
+          <td>{$row['mark']} 分 | {$row['num']} 只</td>
+          <td>{php echo intval($row['mark']*100/$allmark['marks'])} %</td>
+          <td>{if $row['enable']}<span class="label label-danger">黑名单</span>{else}<span class="label label-success">正常</span>{/if}</td>
+          <td style="text-align:right">
+          <a href="{php echo $this->createWeburl('user',array('op'=>'delete','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除" onclick="return confirm('确认删除此吗？删除不可恢复');return false;"><i class="fa fa-times"></i></a></td>
+        </tr>
+        {php $i++}
+        {/loop}
+        <tr>
+        	<Td colspan="3"></Td>
+            <Td>合计</Td>
+            <Td><strong style="color:#F00">{php echo $allmark['marks']} 分 | {php echo $allmark['nums']} 只</strong></Td>
+            <Td colspan="3"></Td>
+        </tr>
+          </tbody>
+      </table>
+      {else}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width:50px;">排序</th>
+            <th style="width:90px;">头像</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>个人成绩</th>
+            <th>助力次数</th>
+            <th>状态</th>
+            <th style="text-align:right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><img src="{MODULE_URL}template/mobile/img/medal.png" width="30" /></td>
+          <td><img src="{$owner['headimgurl']}" width="64" height="64" class="img-rounded" /></td>
+          <td>{$owner['nickname']}</td>
+          <td>{if $owner['sex'] == 1} <span class="label label-danger">男</span> {else if $owner['sex'] == 2} <span class="label label-success">女</span>{else} {/if}</td>
+          <td>{$owner['mark']} 分 | {$owner['num']} 只</td>
+          <td>{php echo pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_member')." where helpid=:helpid ",array(":helpid"=>$owner['id']))} </td>
+          <td>{if $row['enable']}<span class="label label-danger">黑名单</span>{else}<span class="label label-success">正常</span>{/if}</td>
+          <td style="text-align:right">
+          <a href="{php echo $this->createWeburl('user',array('op'=>'delete','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除" onclick="return confirm('确认删除此吗？删除不可恢复');return false;"><i class="fa fa-times"></i></a></td>
+        </tr>
+          </tbody>
+      </table>
+      {/if}
+    </form>
+  </div>
+</div>
+
+{elseif $op == 'display'}
+<div class="main">
+  <div class="category">
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data"  onsubmit="return formcheck(this)">
+      <div class="panel panel-info">
+      <div class="panel-body table-responsive">
+      {if $item['jointype']==0}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width:50px;">排名</th>
+            <th style="width:90px;"></th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>总成绩</th>
+            <th>目标{$item['need']}分</th>
+            <th>助力人数</th>
+            <th>领奖状态</th>
+            <th style="text-align:right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {php $i=1;}
+        {loop $list $row}
+        {php $isget=pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_convert')." where gid=:gid and uid=:uid",array(":gid"=>$gid,":uid"=>$row['id']))}
+        <tr>
+          <td>{php echo $i+($pindex-1)*$psize}</td>
+          <td><img src="{$row['headimgurl']}" width="64" height="64" class="img-rounded" /></td>
+          <td>{$row['nickname']}</td>
+          <td>{if $row['sex'] == 1} <span class="label label-danger">男</span> {else if $row['sex'] == 2} <span class="label label-success">女</span>{else} {/if}</td>
+          <td>{$row['marks']}</td>
+          <td>{if $item['need']}{if $row['marks']-$item['need']>=0}<span class="label label-warning">到达</span>{else}{php echo $row['marks']-$item['need']}{/if}{else}奖励前<span class="label label-success">{$item['ranking']}</span>名{/if}</td>
+          <td> {php echo intval($row['nums'])} </td>
+          <td>
+          {if $isget}<span class="label label-warning">已领</span>{else}
+            {if $item['gametype']==0}
+              {if ($i+($pindex-1)*$psize)<=$item['ranking']}
+              	<span class="label label-danger">可领取</span>
+              {/if}
+            {else}
+              {if $row['marks']-$item['need']>=0}
+              	<span class="label label-danger">可领取</span>
+              {/if}
+            {/if}
+          {/if}
+          </td>
+          <td style="text-align:right">
+          <a href="{php echo $this->createWeburl('user',array('op'=>'post','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="详细"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;
+          <a href="{php echo $this->createWeburl('user',array('op'=>'delete','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除" onclick="return confirm('确认删除此吗？删除不可恢复');return false;"><i class="fa fa-times"></i></a></td>
+        </tr>
+        {php $i++}
+        {/loop}
+          </tbody>
+      </table>
+      {else}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width:50px;">排名</th>
+            <th style="width:90px;"></th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>总成绩</th>
+            <th>目标{$item['need']}分</th>
+            <th>助力次数</th>
+            <th>领奖状态</th>
+            <th style="text-align:right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {php $i=1;}
+        {loop $list $row}
+        {php $isget=pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_convert')." where gid=:gid and uid=:uid",array(":gid"=>$gid,":uid"=>$row['id']))}
+        <tr>
+          <td>{php echo $i+($pindex-1)*$psize}</td>
+          <td><img src="{$row['headimgurl']}" width="64" height="64" class="img-rounded" /></td>
+          <td>{$row['nickname']}</td>
+          <td>{if $row['sex'] == 1} <span class="label label-danger">男</span> {else if $row['sex'] == 2} <span class="label label-success">女</span>{else} {/if}</td>
+          <td>{$row['mark']}</td>
+          <td>{if $item['need']}{if $row['mark']-$item['need']>=0}<span class="label label-warning">到达</span>{else}{php echo $row['marks']-$item['need']}{/if}{else}奖励前<span class="label label-success">{$item['ranking']}</span>名{/if}</td>
+          <td> {php echo pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_member')." where helpid=:helpid ",array(":helpid"=>$row['id']))} </td>
+          <td>
+          {if $isget}<span class="label label-warning">已领</span>{else}
+            {if $item['gametype']==0}
+              {if ($i+($pindex-1)*$psize)<=$item['ranking']}
+              	<span class="label label-danger">可领取</span>
+              {/if}
+            {else}
+              {if $row['marks']-$item['need']>=0}
+              	<span class="label label-danger">可领取</span>
+              {/if}
+            {/if}
+          {/if}
+          </td>
+          <td style="text-align:right">
+          <a href="{php echo $this->createWeburl('user',array('op'=>'post','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="详细"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;
+          <a href="{php echo $this->createWeburl('user',array('op'=>'delete','gid'=>$gid,'id'=>$row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除" onclick="return confirm('确认删除此吗？删除不可恢复');return false;"><i class="fa fa-times"></i></a></td>
+        </tr>
+        {php $i++}
+        {/loop}
+          </tbody>
+      </table>
+      {/if}
+    </form>
+  </div>
+</div>
+{$pager}
+</div>
+{/if}
+{template 'common/footer'} 

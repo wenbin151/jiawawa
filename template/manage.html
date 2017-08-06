@@ -1,0 +1,814 @@
+{template 'common/header'}
+<ul class="nav nav-tabs">
+  <li {if $operation == 'post'}class="active"{/if}><a href="{php echo $this->createWebUrl('manage', array('op' => 'post'))}">添加活动</a></li>
+  <li {if $operation == 'display'}class="active"{/if}><a href="{php echo $this->createWebUrl('manage', array('op' => 'display'))}">管理活动</a></li>
+</ul>
+<script>
+require(['bootstrap'],function($){
+	$('.btn,tips').hover(function(){
+		$(this).tooltip('show');
+	},function(){
+		$(this).tooltip('hide');
+	});
+});
+</script> 
+{if $operation == 'post'}
+<style>
+.jpanel .panel-heading {position:relative;}
+.jpanel .panel-collapse {width:50px;height:38px;line-height:38px;position:absolute;top:0;right:0;color: #CCC;text-align: center;background: #EEE;border-left: 1px #DDD solid;}
+</style>
+<div class="main">
+<form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+  <div class="panel panel-default jpanel">
+    <div class="panel-heading">
+      <h4 class="panel-title">游戏设置（<span>搜</span><span>虎精</span><span>品社</span><span>区www.s</span><span>ouh</span><span>o.net</span><span>提</span><span>供本源</span><span>码</span>
+）</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-1"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-1"> 
+      {if $reply['id']}
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+        <div class="col-sm-9"> {$_W['siteroot']}app/index.php?i={$_W['uniacid']}&c=entry&do=index&m=fendou_jjle&id={php echo $id}
+          <div class="help-block">游戏码：<strong>{php echo $id}</strong></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">管理</label>
+        <div class="col-sm-9"> <a href="{php echo $this->createWebUrl('gift',array('gid'=>$id));}" target="_blank" class="btn btn-info">奖品设置</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('user',array('gid'=>$id));}" target="_blank" class="btn btn-warning">会员管理</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('record',array('gid'=>$id));}" target="_blank" class="btn btn-default">领奖记录</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('admin',array('gid'=>$id));}" target="_blank" class="btn btn-info">核销人员</a>&nbsp;&nbsp; </div>
+      </div>
+      {else}
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+        <div class="col-sm-9">注意：奖品设置，须在游戏添加后才能操作</div>
+      </div>
+      {/if} 
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">&#25628;&#34382;&#31934;&#21697;&#31038;&#21306;&#119;&#119;&#119;&#46;&#115;&#111;&#117;&#104;&#111;&#46;&#110;&#101;&#116;&#25552;&#20379;&#26412;&#28304;&#30721;
+</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-2"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-2">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">活动标题</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['title']}" class="form-control"  name="title">
+          <div class="help-block">活动的名称</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="radio" name="status" value="1" {if $reply['status'] == 1} checked{/if} />
+            进行中</label>
+          <label class="radio-inline">
+            <input type="radio" name="status" value="2" {if $reply['status'] == 2} checked{/if} />
+            终止</label>
+          <div class="help-block">【游戏结束】是指时间上结束；【终止】是指中断游戏。本游戏中，如果是游戏结束后领取奖品，那么应该是在时间上设置；</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">比赛模式</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group "> 
+            <span class="input-group-addon">
+            <label><input type="radio" name="jointype" value="0" {if $reply['jointype'] == 0 } checked{/if}/>
+            组团模式|最大</label></span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['helpnum'])}" class="form-control" name="helpnum">
+            <span class="input-group-addon">人/团</span>
+          </div>
+          <br>
+          <div class="input-group "> <span class="input-group-addon">
+            <label><input type="radio" name="jointype" value="1" {if $reply['jointype'] == 1 } checked{/if} />
+            消耗积分模式|消耗</label></span>
+            <input type="number" style="width:80px" maxlength="5" value="{php echo intval($reply['credits'])}" class="form-control" name="credits">
+            <span class="input-group-addon">积分/次 | 分享增加</span>
+            <input type="number" style="width:80px" maxlength="5" value="{php echo intval($reply['addcredits'])}" class="form-control" name="addcredits"><span class="input-group-addon">积分</span>
+          </div>
+          <br>
+          <div class="input-group "> <span class="input-group-addon">
+            <label><input type="radio" name="jointype" value="2" {if $reply['jointype'] == 2 } checked{/if} />
+            个人分享模式|最多可玩</label></span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['maxgame'])}" class="form-control" name="maxgame">
+            <span class="input-group-addon">次</span>
+          </div>
+          <div class="input-group "> <span class="input-group-addon">
+            <label><input type="radio" name="jointype" value="3" {if $reply['jointype'] == 3 } checked{/if} />
+            抽奖模式|每次可夹</label></span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['maxgame'])}" class="form-control" name="maxgame">
+            <span class="input-group-addon">次</span>
+          </div>
+          
+          <div class="help-block">【组团模式（多人模式）】分享给朋友，与朋友组团参与，积分总分为自己+分享朋友的总分，游戏次数不限。注意：1个人只能帮助1个人。A分享给B，B点击后，即与A组团，团长为A。B如果再点击C发出的分享，不能与C组团。【消耗积分模式（单人模式）】设置为了0则无限玩。参与游戏必须消费积分才能游戏，该模式下，分享后朋友点击即可增加积分。【个人分享模式】每人有1次免费机会，如需再玩，必须分享，每多一个朋友点击多一次机会，但是朋友不能重复点击。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏难度</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="radio" name="difficulty" value="0" {if !$reply['difficulty']} checked{/if} />
+            容易</label>
+          <label class="radio-inline">
+            <input type="radio" name="difficulty" value="1" {if $reply['difficulty'] == 1} checked{/if} />
+            普通</label>
+          <label class="radio-inline">
+            <input type="radio" name="difficulty" value="2" {if $reply['difficulty'] == 2} checked{/if} />
+            困难</label>
+          <div class="help-block">【游戏难度】游戏中，夹起公仔的难度。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖励模式</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group "> <span class="input-group-addon">
+            <label><input type="radio" name="gametype" value="0" {if $reply['gametype'] == 0 } checked{/if} />
+            【模式1】游戏结束后，按积分高低奖励|奖励前</label></span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['ranking'])}" class="form-control" name="ranking">
+            <span class="input-group-addon">名</span> </div>
+          <div class="input-group "> <span class="input-group-addon">
+            <label><input type="radio" name="gametype" value="1" {if $reply['gametype'] ==1 } checked{/if} />
+            【模式2】游戏过程中，奖励指定分数的人|目标</label></span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['need'])}" class="form-control" name="need">
+            <span class="input-group-addon">分</span> </div>
+          <div class="help-block">【模式1-按积分高低奖励】本模式适合某个时间段游戏，然后要求参与者在某一个时间点到达某地点进行集中式领奖。【模式2-奖励指定分数的人】本模式适合奖品有限，先到先得的情况。可在奖品中再设立分数，必须到达该分数方能兑换此奖品。【注意】无论何种模式，每人只能获取一次奖品。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">参与要求-级别</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="checkbox" name="grouptype[]" value="0" {if !$reply['grouptype']} checked{/if} />
+            不限制</label>
+          {loop $grouplist $row}
+          <label class="radio-inline">
+            <input type="checkbox" name="grouptype[]" value="{$row['groupid']}"  {if in_array($row['groupid'],$groupary)}checked{/if} />
+            {$row['title']}</label>
+          {/loop}
+          <div class="help-block">【注意】发起游戏（助力的朋友不计算）需要的级别。如级别不足，则只能助力，不能发起游戏。如组团模式下，级别不足，则只能是给其他助力，自己则无法发起游戏。注意：本模式开启后需要注意，微擎将粉丝转换成会员时，存在一定的bug，如你不熟悉的情况下，请慎重选择！</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">引导关注及说明页</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['gzurl']}" class="form-control" name="gzurl">
+          <div class="help-block">填写一条游戏说明及关注的微信图文消息，必须填写否则无法关注</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['sjurl']}" class="form-control" name="sjurl">
+          <div class="help-block">【开启会员级别模式下】当用户因级别无法参与活动时，跳转到的连接。一是可添加会员升级的说明。如你的会员需要付费升级，那么就跳转到支付链接</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分不足链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['jfurl']}" class="form-control" name="jfurl">
+          <div class="help-block">【采用积分消费模式下】当用户因积分不足无法参与活动时，跳转到的连接。建议填写一条会员如何提高等级的图文。如你的会员需要购买积分，那么就跳转到支付链接</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">活动时间</label>
+        <div class="col-sm-9 form-inline"> {php echo tpl_form_field_date('starttime', date('Y-m-d H:i:s',empty($reply['starttime'])?time():$reply['starttime']), true)} ~ 
+          {php echo tpl_form_field_date('endtime', date('Y-m-d H:i:s',empty($reply['endtime'])?time()+3600*240:$reply['endtime']), true)} </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏时长</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="2" value="{php echo intval($reply['gametime']) ? intval($reply['gametime']) : 30}" class="form-control" name="gametime">
+            <span class="input-group-addon">秒</span> </div>
+          <div class="help-block">游戏时间，最大为99秒,建议30秒</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明</label>
+        <div class="col-sm-9"> {php echo tpl_ueditor('rule', $reply['rule']);}
+          <div class="help-block">填写游戏模式，如单人模式，还是多人模块等等</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖品清单</label>
+        <div class="col-sm-9"> {php echo tpl_ueditor('info', $reply['info']);}
+          <div class="help-block">通过图文方式，展示礼品。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏结束提示语-自己</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['gameend_title']}" class="form-control" name="gameend_title">
+          <div class="help-block">游戏结束时的提示，如，你夹到了|#成绩#|分，咱们去炫富吧！</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏结束时提示语-助力者</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['gameend2_title']}" class="form-control" name="gameend2_title">
+          <div class="help-block">【只适用于组团模式】游戏结束时的提示，如，感谢您的帮忙，得到了|#成绩#|分！</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">核销登陆验证码</label>
+        <div class="col-sm-9 form-inline">
+          <input type="text" value="{$reply['code']}" class="form-control" name="code">
+          <div class="help-block">管理人员手机核销时，手机端登陆时的验证码，游戏号请看id</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">借用设置</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-7"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-7">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用appid</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['appid']}" class="form-control"  name="appid">
+          <div class="help-block">自身是认证服务号也需要填写！</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用secret</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['secret']}" class="form-control"  name="secret">
+          <div class="help-block">自身是认证服务号也需要填写！</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">皮肤UI</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-4"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-4">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页背景</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_bg', $reply['game_bg'])}
+          <div class="help-block">大小限定：640*1008px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏背景</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_playbg', $reply['game_playbg'])}
+          <div class="help-block">大小限定：640*1008px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role1_n', $reply['game_role1_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role1_h', $reply['game_role1_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-分值</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role1_m'])}" class="form-control" name="game_role1_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role2_n', $reply['game_role2_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role2_h', $reply['game_role2_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-分值</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role2_m'])}" class="form-control" name="game_role2_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role3_n', $reply['game_role3_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role3_h', $reply['game_role3_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-分值</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role3_m'])}" class="form-control" name="game_role3_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">几率人物-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role4_n', $reply['game_role4_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">几率人物-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role4_h', $reply['game_role4_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">几率人物-分值</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role4_m'])}" class="form-control" name="game_role4_m">
+            <span class="input-group-addon">分 | 减少</span>
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role4_md'])}" class="form-control" name="game_role4_md">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15。几率人物有50%的几率是加分，50%几率是减分。减分值请填写大于0的整数</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">游戏说明</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-3"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-3">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明1</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_1', $reply['info_1'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明2</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_2', $reply['info_2'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明3</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_3', $reply['info_3'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明4</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_4', $reply['info_4'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">分享设置（<span>搜</span><span>虎精</span><span>品社</span><span>区www.s</span><span>ouh</span><span>o.net</span><span>提</span><span>供本源</span><span>码</span>
+）</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-5"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-5">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享小图</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('thumb_share', $reply['thumb_share'])}
+          <div class="help-block">建议尺寸：120*120px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享文字</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['share_title']}" class="form-control" name="share_title">
+          <div class="help-block">分享时的文字提示，标签|#成绩#|为多少分，如 我夹到了|#成绩#|分,是基友就来激情一下！</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['share_link']}" class="form-control" name="share_link">
+          <div class="help-block">本链接是用于对接其他模块，如果填写本链接，分享出去的地址则是本地址。如在投票后，跳转到本模块游戏，然后客户分享出去的却是投票的地址。仅适合【非组团模式】。</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="form-group col-xs-12">
+    <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+    <input type="hidden" name="token" value="{$_W['token']}" />
+  </div>
+</form>
+</div>
+{elseif $operation == 'post2'}
+<style>
+.jpanel .panel-heading {position:relative;}
+.jpanel .panel-collapse {width:50px;height:38px;line-height:38px;position:absolute;top:0;right:0;color: #CCC;text-align: center;background: #EEE;border-left: 1px #DDD solid;}
+</style>
+<div class="main">
+<form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+  <div class="panel panel-default jpanel">
+    <div class="panel-heading">
+      <h4 class="panel-title">游戏设置</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-1"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-1"> 
+      {if $reply['id']}
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+        <div class="col-sm-9"> {$_W['siteroot']}app/index.php?i={$_W['uniacid']}&c=entry&do=index&m=fendou_jjle&id={php echo $id}
+          <div class="help-block">游戏码：<strong>{php echo $id}</strong></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">管理</label>
+        <div class="col-sm-9"> <a href="{php echo $this->createWebUrl('gift',array('gid'=>$id));}" target="_blank" class="btn btn-info">奖品设置</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('user',array('gid'=>$id));}" target="_blank" class="btn btn-warning">会员管理</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('record',array('gid'=>$id));}" target="_blank" class="btn btn-default">领奖记录</a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('admin',array('gid'=>$id));}" target="_blank" class="btn btn-info">核销人员</a>&nbsp;&nbsp; </div>
+      </div>
+      {else}
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+        <div class="col-sm-9">注意：奖品设置，须在游戏添加后才能操作</div>
+      </div>
+      {/if}
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">核心设置1111111111111</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-2"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-2">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">活动标题</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['title']}" class="form-control"  name="title">
+          <div class="help-block">活动的名称</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="radio" name="status" value="1" {if $reply['status'] == 1} checked{/if} />
+            进行中</label>
+          <label class="radio-inline">
+            <input type="radio" name="status" value="2" {if $reply['status'] == 2} checked{/if} />
+            终止</label>
+          <div class="help-block">【游戏结束】是指时间上结束；【终止】是指中断游戏。本游戏中，如果是游戏结束后领取奖品，那么应该是在时间上设置；</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">比赛模式</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group "> 
+          	<div class="input-group "> <span class="input-group-addon">
+              <label><input type="radio" name="jointype" value="3" {if $reply['jointype'] == 3 } checked{/if} />
+              抽奖模式|每次可夹</label></span>
+              <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['addcredits'])}" class="form-control" name="addcredits">
+              <span class="input-group-addon">下 | 每人最多可以玩</span>
+              <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['maxgame'])}" class="form-control" name="maxgame">
+            <span class="input-group-addon">次</span>
+            </div>
+          <div class="help-block">每次可夹多少下，就是客户只要放下一次夹就算1次。如果夹中了，那么游戏结束。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏难度</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="radio" name="difficulty" value="2" {if $reply['difficulty'] == 2} checked{/if} />
+            困难</label>
+          <div class="help-block">【游戏难度】游戏中，夹起公仔的难度。</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">参与要求-级别</label>
+        <div class="col-sm-9">
+          <label class="radio-inline">
+            <input type="checkbox" name="grouptype[]" value="0" {if !$reply['grouptype']} checked{/if} />
+            不限制</label>
+          {loop $grouplist $row}
+          <label class="radio-inline">
+            <input type="checkbox" name="grouptype[]" value="{$row['groupid']}"  {if in_array($row['groupid'],$groupary)}checked{/if} />
+            {$row['title']}</label>
+          {/loop}
+          <div class="help-block">【注意】发起游戏（助力的朋友不计算）需要的级别。如级别不足，则只能助力，不能发起游戏。如组团模式下，级别不足，则只能是给其他助力，自己则无法发起游戏。注意：本模式开启后需要注意，微擎将粉丝转换成会员时，存在一定的bug，如你不熟悉的情况下，请慎重选择！</div>
+        </div>
+      </div>
+      <div class="form-group">
+      	<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否需要积分</label>
+        <div class="col-sm-9">
+      	<span class="input-group-addon">
+            <label><input type="radio" name="jointype" value="1" {if $reply['jointype'] == 1 } checked{/if} />
+            每次游戏消耗</label></span>
+            <input type="number" style="width:80px" maxlength="5" value="{php echo intval($reply['credits'])}" class="form-control" name="credits"><span class="input-group-addon">积分</span> 
+        </div>
+        <div class="help-block">0为游戏不需要积分</div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">引导关注及说明页</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['gzurl']}" class="form-control" name="gzurl">
+          <div class="help-block">填写一条游戏说明及关注的微信图文消息，必须填写否则无法关注</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['sjurl']}" class="form-control" name="sjurl">
+          <div class="help-block">【开启会员级别模式下】当用户因级别无法参与活动时，跳转到的连接。一是可添加会员升级的说明。如你的会员需要付费升级，那么就跳转到支付链接</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分不足链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['jfurl']}" class="form-control" name="jfurl">
+          <div class="help-block">【采用积分消费模式下】当用户因积分不足无法参与活动时，跳转到的连接。建议填写一条会员如何提高等级的图文。如你的会员需要购买积分，那么就跳转到支付链接</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">活动时间</label>
+        <div class="col-sm-9 form-inline"> {php echo tpl_form_field_date('starttime', date('Y-m-d H:i:s',empty($reply['starttime'])?time():$reply['starttime']), true)} ~ 
+          {php echo tpl_form_field_date('endtime', date('Y-m-d H:i:s',empty($reply['endtime'])?time()+3600*240:$reply['endtime']), true)} </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏时长</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="2" value="{php echo intval($reply['gametime']) ? intval($reply['gametime']) : 30}" class="form-control" name="gametime">
+            <span class="input-group-addon">秒</span> </div>
+          <div class="help-block">游戏时间，最大为99秒,建议30秒</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明</label>
+        <div class="col-sm-9"> {php echo tpl_ueditor('rule', $reply['rule']);}
+          <div class="help-block">填写游戏模式，如单人模式，还是多人模块等等</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖品清单</label>
+        <div class="col-sm-9"> {php echo tpl_ueditor('info', $reply['info']);}
+          <div class="help-block">通过图文方式，展示礼品。</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏结束提示语</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['gameend_title']}" class="form-control" name="gameend_title">
+          <div class="help-block">游戏结束时的提示，如，你夹到了|#成绩#|分，咱们去炫富吧！</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">核销登陆验证码</label>
+        <div class="col-sm-9 form-inline">
+          <input type="text" value="{$reply['code']}" class="form-control" name="code">
+          <div class="help-block">管理人员手机核销时，手机端登陆时的验证码，游戏号请看id</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">借用设置</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-7"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+
+    <div class="panel-body collapse in" id="jframe-7">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用appid</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['appid']}" class="form-control"  name="appid">
+          <div class="help-block">自身是认证服务号也需要填写！</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用secret</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['secret']}" class="form-control"  name="secret">
+          <div class="help-block">自身是认证服务号也需要填写！</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">皮肤UI</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-4"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-4">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页背景</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_bg', $reply['game_bg'])}
+          <div class="help-block">大小限定：640*1008px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏背景</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_playbg', $reply['game_playbg'])}
+          <div class="help-block">大小限定：640*1008px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role1_n', $reply['game_role1_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role1_h', $reply['game_role1_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物A-奖励</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role1_m'])}" class="form-control" name="game_role1_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role2_n', $reply['game_role2_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role2_h', $reply['game_role2_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物B-奖励</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role2_m'])}" class="form-control" name="game_role2_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role3_n', $reply['game_role3_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role3_h', $reply['game_role3_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物C-奖励</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role3_m'])}" class="form-control" name="game_role3_m">
+            <span class="input-group-addon">分</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物D-正常</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role4_n', $reply['game_role4_n'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物D-被夹</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('game_role4_h', $reply['game_role4_h'])}
+          <div class="help-block">大小限定：140*160px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">人物D-分值</label>
+        <div class="col-sm-9 form-inline">
+          <div class="input-group ">
+            <input type="number" style="width:80px" maxlength="3" value="{php echo intval($reply['game_role4_m'])}" class="form-control" name="game_role4_m">
+            <span class="input-group-addon">分 | 减少</span>
+          </div>
+          <div class="help-block">建议填写5的倍数，如5,10,15。几率人物有50%的几率是加分，50%几率是减分。减分值请填写大于0的整数</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">游戏说明</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-3"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-3">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明1</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_1', $reply['info_1'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明2</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_2', $reply['info_2'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明3</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_3', $reply['info_3'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">游戏说明4</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('info_4', $reply['info_4'])}
+          <div class="help-block">640*1008，游戏开始时，用于介绍游戏玩法的说明</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-heading">
+      <h4 class="panel-title">分享设置</h4>
+      <a class="panel-collapse" data-toggle="collapse" href="#jframe-5"> <i class="fa fa-chevron-circle-down"></i> </a> </div>
+    <div class="panel-body collapse in" id="jframe-5">
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享小图</label>
+        <div class="col-sm-9"> {php echo tpl_form_field_image('thumb_share', $reply['thumb_share'])}
+          <div class="help-block">建议尺寸：120*120px</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享文字</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['share_title']}" class="form-control" name="share_title">
+          <div class="help-block">分享时的文字提示，标签|#成绩#|为多少分，如 我夹到了|#成绩#|分,是基友就来激情一下！</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享链接</label>
+        <div class="col-sm-9">
+          <input type="text" value="{$reply['share_link']}" class="form-control" name="share_link">
+          <div class="help-block">本链接是用于对接其他模块，如果填写本链接，分享出去的地址则是本地址。如在投票后，跳转到本模块游戏，然后客户分享出去的却是投票的地址。仅适合【非组团模式】。</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="form-group col-xs-12">
+    <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+    <input type="hidden" name="token" value="{$_W['token']}" />
+  </div>
+</form>
+</div>
+{elseif $operation == 'display'}
+<div class="main">
+  <div class="category">
+    <form action="" method="post" onsubmit="return formcheck(this)">
+      <div class="panel panel-default">
+        <div class="panel-body table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th style="width:80px;">游戏号</th>
+                <th>活动标题</th>
+                <th>活动时间</th>
+                <th>游戏模式</th>
+                <th>奖励模式</th>
+                <th>奖品设置</th>
+                <th>参与情况</th>
+                <th style="text-align:right">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+            {loop $list $row}
+            {php $glist=explode(",",$row['grouptype'])}
+            {php $giftcount=pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_gift')." WHERE gid=:gid",array(':gid'=>$row['id']))}
+            <tr>
+              <td>{$row['id']}</td>
+              <td>{$row['title']}</td>
+              <td><span class="label label-info">开始：{php echo date('m/d H:i',$row['starttime'])}</span><br><span class="label label-info">结束：{php echo date('m/d H:i',$row['endtime'])}</span></td>
+              <td>{if $row['jointype']==1}<span class="label label-warning">积分模式</span><br><span class="label label-warning">每次游戏{$row['credits']}分</span><br><span class="label label-warning">分享增加{$row['addcredits']}分</span>{elseif $row['jointype']==2}<span class="label label-default">单人分享模式</span>{else}<span class="label label-info">组团模式</span><br><span class="label label-info">团体规模{$row['helpnum']}人</span>{/if}</td>
+              <td>
+              <div style="margin-bottom:5px">{if $row['gametype']}<span class="label label-warning">达到{$row['need']}积分</span>{else}<span class="label label-info">奖励前{$row['ranking']}名</span>{/if}</div>
+              <div>
+              {loop $glist $rew}
+              <span class="label label-default">{php echo $groupary[$rew]}</span>
+              {/loop}
+              </div>
+              </td>
+              <td>{php echo intval($giftcount)}</td>
+              <td>{php echo pdo_fetchcolumn("SELECT count(*) FROM ".tablename('fendou_jjle_member')." WHERE gid=:gid",array(':gid'=>$row['id']))}</td>
+              <td style="text-align:right"><div style="margin-bottom:10px"><a href="{php echo $this->createWebUrl('gift', array('op' => 'post', 'gid' => $row['id']))}" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="添加商品"><i class="fa fa-gift"></i></a>&nbsp;&nbsp;  <a href="{php echo $this->createWebUrl('user',array('gid'=>$row['id']))}" target="_blank" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="参与者"><i class="fa fa-user"></i></a>
+              </div><div>
+              <a href="{php echo $this->createWebUrl('manage', array('op' => 'post', 'id' => $row['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp; <a href="{php echo $this->createWebUrl('manage', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此活动吗？');return false;" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除"><i class="fa fa-times"></i></a></div></td>
+            </tr>
+            {/loop}
+           </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{/if}
+{template 'common/footer'} 
